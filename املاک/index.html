@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>آژانس املاک — نسخه مدرن</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg1:#0b0e1c; --bg2:#161a36; --glass:rgba(255,255,255,.06); --line:rgba(255,255,255,.1);
+      --acc:#7c5cff; --acc2:#2ee6a6; --text:#eaf0ff; --muted:#aab3d9; --danger:#ff7a7a;
+      --shadow:0 16px 50px rgba(0,0,0,.35);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;font-family:'Vazirmatn',system-ui,Segoe UI; color:var(--text); background:radial-gradient(1100px 800px at 70% -10%, #1b1e48 0%, transparent 60%), linear-gradient(180deg,var(--bg1),var(--bg2));}
+    a{color:inherit;text-decoration:none}
+
+    /* background canvas */
+    #bg{position:fixed;inset:0;z-index:-1}
+
+    /* header */
+    header{position:sticky;top:0;z-index:40; backdrop-filter: blur(10px); background:linear-gradient(180deg, rgba(10,12,30,.75), rgba(10,12,30,.35)); border-bottom:1px solid var(--line)}
+    .container{max-width:1180px;margin:0 auto;padding:0 20px}
+    .nav{display:flex;align-items:center;justify-content:space-between;padding:14px 0}
+    .brand{display:flex;align-items:center;gap:12px;font-weight:900}
+    .logo{width:34px;height:34px;border-radius:10px;background:conic-gradient(from 180deg, var(--acc), #4aa2ff, #ff73a1, var(--acc2), var(--acc)); box-shadow:0 0 0 3px rgba(255,255,255,.08)}
+    .nav-links{display:flex;gap:22px}
+    .nav-links a{padding:8px 12px;border-radius:12px;transition:.25s;color:var(--muted);font-weight:700}
+    .nav-links a:hover{color:var(--text);background:var(--glass)}
+    .burger{display:none;width:42px;height:42px;border:1px solid var(--line);border-radius:12px;background:var(--glass);align-items:center;justify-content:center;cursor:pointer}
+    .burger span{display:block;width:22px;height:2px;background:#fff;position:relative}
+    .burger span::before,.burger span::after{content:"";position:absolute;left:0;width:22px;height:2px;background:#fff}
+    .burger span::before{top:-6px}.burger span::after{top:6px}
+    @media (max-width: 860px){
+      .nav-links{display:none;position:absolute;right:16px;left:16px;top:64px;background: rgba(12,14,30,.92); border:1px solid var(--line); border-radius:16px; flex-direction:column;padding:12px}
+      .nav-links.show{display:flex}
+      .burger{display:flex}
+    }
+
+    /* hero */
+    .hero{padding:70px 0 30px}
+    .hero-inner{display:grid;grid-template-columns:1.1fr .9fr;gap:28px;align-items:center}
+    .hero h1{margin:0 0 8px;font-size:38px;line-height:1.15;font-weight:900}
+    .hero p{margin:0 0 18px;color:var(--muted)}
+    .badge{display:inline-block;margin-bottom:10px;padding:6px 10px;border-radius:999px;background:rgba(124,92,255,.18);border:1px solid rgba(124,92,255,.36);font-size:12px}
+    .searchbox{display:grid;grid-template-columns:1fr 1fr 1fr 1fr auto;gap:8px;background:var(--glass);border:1px solid var(--line);border-radius:16px;padding:10px}
+    .searchbox select,.searchbox input{height:42px;border-radius:10px;border:1px solid var(--line);background:rgba(255,255,255,.06);color:var(--text);padding:0 10px}
+    .btn{height:42px;padding:0 16px;border-radius:12px;border:1px solid var(--line);background:linear-gradient(135deg,var(--acc),#4aa2ff);color:#fff;font-weight:800;cursor:pointer}
+    .hero-card{height:320px;border-radius:22px;background: radial-gradient(120% 100% at 20% 0%, rgba(124,92,255,.35), transparent 42%), radial-gradient(100% 140% at 100% 100%, rgba(46,230,166,.25), transparent 40%), var(--glass);border:1px solid var(--line);box-shadow:var(--shadow);display:flex;align-items:center;justify-content:center}
+    .tower{width:200px;height:200px;border-radius:22px;background:linear-gradient(180deg,#a6b2ff,#6f7dff); box-shadow:inset 0 -20px 40px rgba(0,0,0,.2); position:relative; animation:float 6s ease-in-out infinite}
+    .tower::after{content:"";position:absolute;inset:14px;border-radius:18px;background:linear-gradient(180deg, rgba(255,255,255,.2), rgba(255,255,255,.05))}
+    @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+    @media (max-width: 960px){.hero-inner{grid-template-columns:1fr}.searchbox{grid-template-columns:1fr 1fr 1fr auto}.hero h1{font-size:30px}}
+    @media (max-width: 620px){.searchbox{grid-template-columns:1fr 1fr auto}}
+
+    /* sections */
+    .section{padding:40px 0}
+    .section h2{font-size:26px;margin:0 0 14px}
+
+    /* featured slider */
+    .slider-wrap{position:relative;border:1px solid var(--line);border-radius:18px;background:var(--glass);padding:10px}
+    .slider{position:relative;height:320px;border-radius:12px;overflow:hidden}
+    .slide{position:absolute;inset:0;display:grid;grid-template-columns:1.3fr .7fr;gap:14px;align-items:stretch;padding:14px; transform:translateX(100%); transition:transform .6s ease}
+    .slide.active{transform:translateX(0)}
+    .slide.prev{transform:translateX(-100%)}
+    .slide .img{border-radius:12px; background-size:cover; background-position:center}
+    .slide .info{border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.04);padding:12px;display:flex;flex-direction:column;gap:8px}
+    .tag{display:inline-block;padding:4px 10px;border-radius:999px;background:rgba(46,230,166,.18);border:1px solid rgba(46,230,166,.36);font-size:12px}
+    .meta{display:flex;gap:10px;color:var(--muted);font-size:13px}
+    .ctrl{padding:8px 12px;border-radius:12px;background:var(--glass);border:1px solid var(--line);cursor:pointer;font-weight:800}
+    .slider-controls{display:flex;justify-content:space-between;align-items:center;margin-top:10px}
+
+    /* properties grid */
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .card{border:1px solid var(--line);background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));border-radius:16px;overflow:hidden;transition:.25s}
+    .card:hover{transform:translateY(-6px); box-shadow:var(--shadow)}
+    .card .thumb{height:180px;background-size:cover;background-position:center}
+    .card .body{padding:12px}
+    .card .row{display:flex;justify-content:space-between;align-items:center;gap:10px}
+    .price{font-weight:900}
+    .muted{color:var(--muted)}
+    .heart{cursor:pointer; user-select:none}
+    @media (max-width: 960px){.grid{grid-template-columns:repeat(2,1fr)}}
+    @media (max-width: 640px){.grid{grid-template-columns:1fr}}
+
+    /* contact */
+    form{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    form input, form textarea{height:42px;padding:0 10px;border-radius:10px;border:1px solid var(--line);background:rgba(255,255,255,.06);color:var(--text)}
+    form textarea{height:110px;grid-column:1/-1;padding:10px}
+    form .btn{grid-column:1/-1}
+
+    footer{margin-top:40px;padding:24px 0;border-top:1px solid var(--line);background:linear-gradient(180deg, rgba(12,14,30,.0), rgba(12,14,30,.35))}
+  </style>
+</head>
+<body>
+  <canvas id="bg"></canvas>
+
+  <header>
+    <div class="container nav">
+      <div class="brand"><div class="logo"></div><span>آژانس املاک  یعقوب پور</span></div>
+      <nav id="navLinks" class="nav-links">
+        <a href="#home">خانه</a>
+        <a href="#featured">ویژه‌ها</a>
+        <a href="#properties">فهرست املاک</a>
+        <a href="#contact">تماس</a>
+      </nav>
+      <button id="burger" class="burger" aria-label="منو"><span></span></button>
+    </div>
+  </header>
+
+  <main id="home" class="hero">
+    <div class="container hero-inner">
+      <section>
+        <span class="badge">پیدا کردن خانه‌ی رویایی — ساده و سریع</span>
+        <h1>خرید، فروش و رهن/اجاره املاک در سراسر ایران</h1>
+        <p>با فیلترهای هوشمند، آگهی‌های واقعی و تور مجازی، بهترین انتخاب را انجام بده.</p>
+
+        <div class="searchbox" id="searchBox">
+          <select id="city">
+            <option value="">شهر (همه)</option>
+            <option>رشت</option>
+            <option>شفت</option>
+            <option>شالما</option>
+            <option>سیاه مزگی</option>
+            <option>...</option>
+          </select>
+          <select id="type">
+            <option value="">نوع ملک (همه)</option>
+            <option value="apartment">آپارتمان</option>
+            <option value="villa">ویلایی</option>
+            <option value="office">اداری</option>
+          </select>
+          <input id="minPrice" type="number" placeholder="حداقل قیمت (تومان)">
+          <input id="maxPrice" type="number" placeholder="حداکثر قیمت (تومان)">
+          <button class="btn" id="searchBtn">جستجو</button>
+        </div>
+      </section>
+      <div class="hero-card" aria-hidden="true">
+        <div class="tower"></div>
+      </div>
+    </div>
+  </main>
+
+  <section id="featured" class="section container">
+    <h2>فایل‌های ویژه</h2>
+    <div class="slider-wrap">
+      <div class="slider" id="slider">
+        <!-- اسلایدها با JS پر می‌شوند -->
+      </div>
+      <div class="slider-controls">
+        <button class="ctrl" id="prev">قبلی</button>
+        <div style="display:flex;gap:8px" id="dots"></div>
+        <button class="ctrl" id="next">بعدی</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="properties" class="section container">
+    <h2>فهرست املاک</h2>
+    <div class="grid" id="list">
+      <!-- کارت‌ها اینجا رندر می‌شن -->
+    </div>
+  </section>
+
+  <section class="section container" id="map">
+    <h2>موقعیت دفتر</h2>
+    <div style="border:1px solid var(--line);border-radius:16px;overflow:hidden; height:340px; background:var(--glass)">
+      <iframe title="map" src="https://www.openstreetmap.org/export/embed.html?bbox=51.27%2C35.65%2C51.50%2C35.78&layer=mapnik" style="width:100%;height:100%;border:0"></iframe>
+    </div>
+  </section>
+
+  <section id="contact" class="section container">
+    <h2>تماس با ما</h2>
+    <form id="contactForm">
+      <input required id="name" placeholder="نام و نام‌خانوادگی" />
+      <input required id="phone" type="tel" placeholder="شماره تماس" />
+      <input id="email" type="email" placeholder="ایمیل (اختیاری)" />
+      <textarea required id="msg" placeholder="پیامتان را بنویسید..."></textarea>
+      <button class="btn" type="submit">ارسال پیام</button>
+    </form>
+    <p id="formMsg" class="muted" style="margin-top:8px"></p>
+  </section>
+
+  <footer>
+    <div class="container" style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap">
+      <small class="muted">آژانس املاک اعتماد</small>
+      <div style="display:flex;gap:10px">
+        <a class="btn" href="https://wa.me/989000000000" target="_blank" rel="noopener">واتساپ</a>
+        <a class="btn" href="#home">بازگشت به بالا ↑</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // ===== Mobile Nav =====
+    const burger = document.getElementById('burger');
+    const navLinks = document.getElementById('navLinks');
+    burger.addEventListener('click', ()=> navLinks.classList.toggle('show'));
+
+    // ===== Data (نمونه‌ی اولیه) =====
+    const PROPS = [
+      {id:1, title:'آپارتمان 120 متری نوساز', city:'شفت', type:'apartment', beds:3, baths:2, area:120, price: 12_500_000_000, featured:true, img:'https://images.unsplash.com/photo-1494526585095-c41746248156?q=80&w=1080&auto=format&fit=crop'},
+      {id:2, title:'ویلای لاکچری با استخر', city:'رشت', type:'villa', beds:4, baths:3, area:310, price: 38_000_000_000, featured:true, img:'https://images.unsplash.com/photo-1502003148287-a82ef80a6abc?q=80&w=1080&auto=format&fit=crop'},
+      {id:3, title:'دفتر اداری مدرن', city:'سیاه مزگی', type:'office', beds:0, baths:1, area:95, price: 9_800_000_000, featured:false, img:'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=1080&auto=format&fit=crop'},
+      {id:4, title:'آپارتمان 85 متری خوش‌نقشه', city:'لپوندان', type:'apartment', beds:2, baths:1, area:85, price: 6_700_000_000, featured:false, img:'https://images.unsplash.com/photo-1499951360447-b19be8fe80f5?q=80&w=1080&auto=format&fit=crop'},
+      {id:5, title:'خانه حیاط‌دار 200 متری', city:'رشت', type:'villa', beds:3, baths:2, area:200, price: 18_900_000_000, featured:false, img:'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?q=80&w=1080&auto=format&fit=crop'},
+      {id:6, title:'سوئیت نقلی و اقتصادی', city:'تهران', type:'apartment', beds:1, baths:1, area:45, price: 2_950_000_000, featured:false, img:'https://images.unsplash.com/photo-1505691723518-36a5ac3b2a59?q=80&w=1080&auto=format&fit=crop'}
+    ];
+
+    // ===== Helpers =====
+    const fmt = (n)=> new Intl.NumberFormat('fa-IR').format(Math.round(n/1_000_000)) + ' میلیون';
+
+    // ===== Render Featured Slider =====
+    const slider = document.getElementById('slider');
+    const dotsWrap = document.getElementById('dots');
+    const featured = PROPS.filter(p=>p.featured);
+    let sIdx = 0, sLock=false;
+
+    function buildSlides(){
+      slider.innerHTML = ''; dotsWrap.innerHTML='';
+      featured.forEach((p,i)=>{
+        const el = document.createElement('div'); el.className='slide'+(i===0?' active':'');
+        el.innerHTML = `
+          <div class="img" style="background-image:url('${p.img}')"></div>
+          <div class="info">
+            <div class="tag">ویژه</div>
+            <h3 style="margin:0">${p.title}</h3>
+            <div class="meta"><span>شهر: ${p.city}</span><span>متراژ: ${p.area}متر</span><span>اتاق: ${p.beds}</span></div>
+            <div class="price">${fmt(p.price)} تومان</div>
+            <button class="ctrl" onclick="alert('برای دمو: تماس با مشاور ☎️ 0900-000-0000')">درخواست بازدید</button>
+          </div>`;
+        slider.appendChild(el);
+        const d=document.createElement('div'); d.className='dot'+(i===0?' active':''); d.dataset.i=i; d.onclick=()=>go(i); dotsWrap.appendChild(d);
+      })
+    }
+    function go(n){ if(sLock||n===sIdx) return; sLock=true; const slides=[...slider.children];
+      slides.forEach(s=>s.classList.remove('prev','active'));
+      slides[sIdx].classList.add('prev'); slides[n].classList.add('active');
+      dotsWrap.children[sIdx].classList.remove('active'); dotsWrap.children[n].classList.add('active');
+      sIdx=n; setTimeout(()=>sLock=false,650); }
+    function next(){ go((sIdx+1)%featured.length) }
+    function prev(){ go((sIdx-1+featured.length)%featured.length) }
+    document.getElementById('next').onclick=next; document.getElementById('prev').onclick=prev;
+    let auto = setInterval(next, 4500);
+    slider.addEventListener('pointerenter',()=> clearInterval(auto));
+    slider.addEventListener('pointerleave',()=> auto=setInterval(next,4500));
+
+    // ===== Render List + Filters =====
+    const list = document.getElementById('list');
+    const city = document.getElementById('city');
+    const type = document.getElementById('type');
+    const minPrice = document.getElementById('minPrice');
+    const maxPrice = document.getElementById('maxPrice');
+    const searchBtn = document.getElementById('searchBtn');
+
+    function render(items){
+      list.innerHTML='';
+      if(items.length===0){ list.innerHTML = `<div class="muted">موردی با این فیلترها یافت نشد.</div>`; return }
+      items.forEach(p=>{
+        const el = document.createElement('div'); el.className='card';
+        el.innerHTML = `
+          <div class="thumb" style="background-image:url('${p.img}')"></div>
+          <div class="body">
+            <div class="row"><strong>${p.title}</strong><span class="price">${fmt(p.price)} ت</span></div>
+            <div class="muted" style="margin:6px 0">${p.city} • ${p.area} متر • ${p.beds} خواب</div>
+            <div class="row">
+              <button class="ctrl" onclick="alert('مشاور: -')">تماس</button>
+              <span class="heart" onclick="this.textContent=this.textContent==='❤'?'♡':'❤'">♡</span>
+            </div>
+          </div>`;
+        list.appendChild(el);
+      })
+    }
+
+    function filter(){
+      const min = Number(minPrice.value)||0; const max = Number(maxPrice.value)||Infinity;
+      const res = PROPS.filter(p=>
+        (!city.value || p.city===city.value) &&
+        (!type.value || p.type===type.value) &&
+        (p.price>=min && p.price<=max)
+      );
+      render(res);
+    }
+    searchBtn.addEventListener('click', filter);
+
+    // Enter key triggers search
+    [city,type,minPrice,maxPrice].forEach(el=> el.addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); filter(); }}));
+
+    // initial renders
+    buildSlides();
+    render(PROPS);
+
+    // ===== Contact Form (demo) =====
+    const f = document.getElementById('contactForm');
+    const msg = document.getElementById('formMsg');
+    f.addEventListener('submit', (e)=>{
+      e.preventDefault();
+      const data = {name: f.name?.value || document.getElementById('name').value, phone: document.getElementById('phone').value, email: document.getElementById('email').value, message: document.getElementById('msg').value};
+      
+      msg.textContent = 'پیام شما ثبت شد! به زودی تماس می‌گیریم.';
+      f.reset();
+    });
+
+    // ===== Smooth scroll =====
+    document.querySelectorAll('a[href^="#"]').forEach(a=>{
+      a.addEventListener('click', e=>{
+        const id=a.getAttribute('href'); if(id.length>1){ e.preventDefault(); document.querySelector(id).scrollIntoView({behavior:'smooth'}); navLinks.classList.remove('show'); }
+      })
+    })
+
+    // ===== Background Particles =====
+    const canvas = document.getElementById('bg'); const ctx = canvas.getContext('2d'); let w,h,dpr;
+    const particles=[]; const COUNT=80;
+    function resize(){ dpr=Math.min(devicePixelRatio||1,2); w=canvas.width=innerWidth*dpr; h=canvas.height=innerHeight*dpr; canvas.style.width=innerWidth+'px'; canvas.style.height=innerHeight+'px'; }
+    addEventListener('resize', resize); resize();
+    class P{ constructor(){ this.reset(true) } reset(init=false){ this.x=Math.random()*w; this.y=Math.random()*h; this.r=1+Math.random()*2.2; this.vx=-0.2+Math.random()*0.4; this.vy=-0.2+Math.random()*0.4; this.a=.25+Math.random()*.55; if(!init) this.a=0 } step(){ this.x+=this.vx; this.y+=this.vy; this.a+=0.004; if(this.x<0||this.x>w||this.y<0||this.y>h) this.reset() } draw(){ ctx.beginPath(); ctx.arc(this.x,this.y,this.r,0,Math.PI*2); ctx.fillStyle=`rgba(124,92,255,${this.a})`; ctx.fill(); }}
+    for(let i=0;i<COUNT;i++) particles.push(new P());
+    function loop(){ ctx.clearRect(0,0,w,h); particles.forEach(p=>{p.step(); p.draw();}); for(let i=0;i<particles.length;i++){ for(let j=i+1;j<particles.length;j++){ const a=particles[i], b=particles[j]; const dx=a.x-b.x, dy=a.y-b.y; const d=Math.hypot(dx,dy); if(d<120){ ctx.strokeStyle=`rgba(46,230,166,${(120-d)/600})`; ctx.lineWidth=dpr*.6; ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke(); }}} requestAnimationFrame(loop) }
+    loop();
+  </script>
+</body>
+</html>
